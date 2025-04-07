@@ -239,7 +239,7 @@ const GoldRates = () => {
         clearInterval(refreshTimerRef.current);
       }
     };
-  }, [autoRefresh]);
+  }, [autoRefresh, handleRefresh]);
 
   // Initial fetch and location
   useEffect(() => {
