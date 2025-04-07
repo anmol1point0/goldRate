@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FaMapMarkerAlt, FaSync } from 'react-icons/fa';
 import moment from 'moment';
 import PriceHistory from './PriceHistory';
@@ -114,10 +114,10 @@ const GoldRates = () => {
     }
   };
 
-  const handleRefresh = async () => {
+  const handleRefresh = useCallback(async () => {
     setLoading(true);
     await fetchRates();
-  };
+  }, [fetchRates]);
 
   const getLocation = async () => {
     setLocationLoading(true);

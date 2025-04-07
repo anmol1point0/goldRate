@@ -17,5 +17,6 @@ const mockAuth = {
   }
 };
 
+// Export the mock auth
 export const auth = mockAuth;
 export default { auth: mockAuth }; 

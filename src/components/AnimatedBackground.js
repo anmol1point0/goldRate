@@ -52,7 +52,7 @@ const AnimatedBackground = ({ theme }) => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [collectedCoins]);
+  }, [collectedCoins, createBurstEffect]);
 
   return (
     <>

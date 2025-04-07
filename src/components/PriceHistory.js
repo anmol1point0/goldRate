@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import moment from 'moment';
 import { FaSearch } from 'react-icons/fa';
 import { Line } from 'react-chartjs-2';
@@ -79,89 +79,7 @@ const PriceHistory = ({ metal, rates }) => {
     fetchUsdToInr();
   }, []);
 
-  const generateTimeRangeData = (range) => {
-    const basePrice = metal === 'gold' ? 65000 : 75000;
-    const now = moment();
-    let startDate;
-
-    switch (range) {
-      case '1D':
-        startDate = now.clone().subtract(1, 'day');
-        break;
-      case '1W':
-        startDate = now.clone().subtract(1, 'week');
-        break;
-      case '1M':
-        startDate = now.clone().subtract(1, 'month');
-        break;
-      case '3M':
-        startDate = now.clone().subtract(3, 'months');
-        break;
-      case '6M':
-        startDate = now.clone().subtract(6, 'months');
-        break;
-      case '1Y':
-        startDate = now.clone().subtract(1, 'year');
-        break;
-      default:
-        startDate = now.clone().subtract(1, 'week');
-    }
-
-    const startPrice = basePrice + (Math.random() * 2000 - 1000);
-    const endPrice = basePrice + (Math.random() * 2000 - 1000);
-    const priceChange = endPrice - startPrice;
-    const percentageChange = ((priceChange / startPrice) * 100).toFixed(2);
-    const days = now.diff(startDate, 'days');
-
-    return {
-      startDate: startDate.format('MMMM D, YYYY'),
-      endDate: now.format('MMMM D, YYYY'),
-      startPrice,
-      endPrice,
-      priceChange,
-      percentageChange,
-      days
-    };
-  };
-
-  useEffect(() => {
-    setTimeRangeData(generateTimeRangeData(timeRange));
-  }, [timeRange, metal]);
-
-  const calculatePriceChange = (startPrice, endPrice) => {
-    const change = endPrice - startPrice;
-    const percentageChange = (change / startPrice) * 100;
-    return { change, percentageChange };
-  };
-
-  const handleCompare = () => {
-    if (!customStartDate || !customEndDate || !usdToINR) return;
-
-    const startDate = new Date(customStartDate);
-    const endDate = new Date(customEndDate);
-
-    if (startDate >= endDate) {
-      alert('Start date must be before end date');
-      return;
-    }
-
-    const basePrice = metal === 'gold' ? 2000 : 25; // Base price in USD
-    const startPrice = basePrice * usdToINR;
-    const endPrice = basePrice * usdToINR * (1 + (Math.random() - 0.5) * 0.1);
-
-    const { change, percentageChange } = calculatePriceChange(startPrice, endPrice);
-
-    setCustomComparison({
-      startDate: startDate.toLocaleDateString(),
-      endDate: endDate.toLocaleDateString(),
-      startPrice,
-      endPrice,
-      change,
-      percentageChange,
-    });
-  };
-
-  const generateHistoricalData = () => {
+  const generateTimeRangeData = useCallback(() => {
     if (!usdToINR) return { labels: [], datasets: [] };
 
     const now = new Date();
@@ -222,9 +140,46 @@ const PriceHistory = ({ metal, rates }) => {
         },
       ],
     };
+  }, [timeRange, customStartDate, customEndDate, metal, usdToINR]);
+
+  useEffect(() => {
+    setTimeRangeData(generateTimeRangeData());
+  }, [generateTimeRangeData]);
+
+  const calculatePriceChange = (startPrice, endPrice) => {
+    const change = endPrice - startPrice;
+    const percentageChange = (change / startPrice) * 100;
+    return { change, percentageChange };
   };
 
-  const chartData = generateHistoricalData();
+  const handleCompare = () => {
+    if (!customStartDate || !customEndDate || !usdToINR) return;
+
+    const startDate = new Date(customStartDate);
+    const endDate = new Date(customEndDate);
+
+    if (startDate >= endDate) {
+      alert('Start date must be before end date');
+      return;
+    }
+
+    const basePrice = metal === 'gold' ? 2000 : 25; // Base price in USD
+    const startPrice = basePrice * usdToINR;
+    const endPrice = basePrice * usdToINR * (1 + (Math.random() - 0.5) * 0.1);
+
+    const { change, percentageChange } = calculatePriceChange(startPrice, endPrice);
+
+    setCustomComparison({
+      startDate: startDate.toLocaleDateString(),
+      endDate: endDate.toLocaleDateString(),
+      startPrice,
+      endPrice,
+      change,
+      percentageChange,
+    });
+  };
+
+  const chartData = generateTimeRangeData();
 
   const chartOptions = {
     responsive: true,
