@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 const AnimatedBackground = ({ theme }) => {
   const [collectedCoins, setCollectedCoins] = useState([]);
@@ -20,7 +20,7 @@ const AnimatedBackground = ({ theme }) => {
 
   const currentTheme = themeConfig[theme];
 
-  const createBurstEffect = () => {
+  const createBurstEffect = useCallback(() => {
     // Create bursting coins from the collected ones
     const newBurstingCoins = collectedCoins.map(coin => ({
       ...coin,
@@ -34,7 +34,7 @@ const AnimatedBackground = ({ theme }) => {
       setBurstingCoins([]);
       setCollectedCoins([]); // Empty the container
     }, 1500);
-  };
+  }, [collectedCoins]);
 
   useEffect(() => {
     // Add a new coin every 3 seconds
@@ -52,7 +52,7 @@ const AnimatedBackground = ({ theme }) => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [collectedCoins, createBurstEffect]);
+  }, [createBurstEffect]);
 
   return (
     <>

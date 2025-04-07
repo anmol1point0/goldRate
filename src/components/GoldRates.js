@@ -47,7 +47,7 @@ const GoldRates = () => {
 
   const currentTheme = themeColors[selectedMetal];
 
-  const fetchRates = async () => {
+  const fetchRates = useCallback(async () => {
     try {
       setLoading(true);
       console.log('Fetching rates from backend...');
@@ -112,7 +112,7 @@ const GoldRates = () => {
       setError(`Unable to fetch live rates: ${error.message}`);
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleRefresh = useCallback(async () => {
     setLoading(true);

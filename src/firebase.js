@@ -19,4 +19,7 @@ const mockAuth = {
 
 // Export the mock auth
 export const auth = mockAuth;
-export default { auth: mockAuth }; 
+
+// Create a named object for default export
+const firebaseApp = { auth: mockAuth };
+export default firebaseApp; 

@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import moment from 'moment';
-import { FaSearch } from 'react-icons/fa';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -32,7 +30,6 @@ const PriceHistory = ({ metal, rates }) => {
   const [customComparison, setCustomComparison] = useState(null);
   const [timeRangeData, setTimeRangeData] = useState(null);
   const [usdToINR, setUsdToINR] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const themeColors = {
     gold: {
